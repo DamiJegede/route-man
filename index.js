@@ -18,6 +18,10 @@ let map = exports.routes;
 exports.listen = (portNumber, routes) => {
 	if (portNumber) server.listen(portNumber);
 	if (routes) map = routes;
+
+	(async () => {
+		server = http.createServer(routeManager);
+	})();
 }
 
 /**
@@ -28,10 +32,6 @@ exports.listen = (portNumber, routes) => {
 exports.setHeader = (attribute, value) => {
 	if (attribute && value) headers.push([attribute, value]);
 }
-
-(async () => {
-	server = http.createServer(routeManager);
-})();
 
 let routeManager = async (request, response) => {
 	for (let header of headers) {
