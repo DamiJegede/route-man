@@ -55,7 +55,7 @@ let routeManager = async (request, response) => {
 
 	//Check if route is available
 	if (!route) {
-		if (module.exports.verbose) console.log(`RouteMan: Couldn't find route ${path}`, `Available routes: ${module.exports.routes}`);
+		if (module.exports.verbose) console.log(`RouteMan: Couldn't find route ${path}. Available routes...`, module.exports.routes);
 		response.write(JSON.stringify({status: 402, message: `Unknown route to ${path}.`}));
 		return response.end();
 	}
@@ -67,7 +67,12 @@ let routeManager = async (request, response) => {
 			return response.end();
 		}
 
-		if (module.exports.verbose) console.log(`RouteMan: \nData: ${data} \nFiles: ${files}`);
+		if (module.exports.verbose) {
+			console.log("RouteMan: data...");
+			console.log(data);
+			console.log("RouteMan: files...");
+			console.log(files);
+		}
 
 		route.callback(data, files, request, response);
 	});
