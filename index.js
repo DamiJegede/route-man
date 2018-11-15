@@ -16,11 +16,15 @@ let map = exports.routes;
  * @param {Object} routes
  */
 exports.listen = (portNumber, routes) => {
-	if (portNumber) server.listen(portNumber);
-	if (routes) map = routes;
+	if (!routes) {
+		console.log("No routes declared. Gracefully exiting route-man.");
+		return false;
+	}
+	else map = routes;
 
 	(async () => {
 		server = http.createServer(routeManager);
+		server.listen(portNumber ? portNumber : 9000);
 	})();
 }
 
@@ -37,6 +41,8 @@ let routeManager = async (request, response) => {
 	for (let header of headers) {
 		response.setHeader(header[0], header[1]);
 	}
+
+	response.writeHead(200, {"Content-Type": "text/json"});
 
 	let path = url.parse(request.url).pathname;
 	let route = map[path.split("/")[1]];
