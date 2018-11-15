@@ -50,10 +50,12 @@ let routeManager = async (request, response) => {
 	}
 
 	let path = url.parse(request.url).pathname;
-	let route = module.exports.routes[path.split("/")[1]];
+	if (module.exports.verbose) console.log(`RouteMan: Looking for path ${path}`);
+	let route = module.exports.routes[path];
 
 	//Check if route is available
 	if (!route) {
+		if (module.exports.verbose) console.log(`RouteMan: Couldn't find route ${path}`, `Available routes: ${module.exports.routes}`);
 		response.write(JSON.stringify({status: 402, message: `Unknown route to ${path}.`}));
 		return response.end();
 	}
