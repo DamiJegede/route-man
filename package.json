@@ -1,0 +1,30 @@
+{
+  "name": "route-man",
+  "version": "1.0.0",
+  "description": "Route Manager is a superfast and lightweight route processor for backend Node applications. It's a bit like express, but without the overhead of express dependencies.",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm start index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/roombus/route-man.git"
+  },
+  "keywords": [
+    "routing",
+    "express",
+    "lightweight",
+    "router",
+    "router",
+    "fast"
+  ],
+  "author": "Damilola Rafael Jegede",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/roombus/route-man/issues"
+  },
+  "homepage": "https://github.com/roombus/route-man#readme",
+  "dependencies": {
+    "formidable": "^1.2.1"
+  }
+}
