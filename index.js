@@ -8,7 +8,7 @@ let headers = [];
 /**
  * Register routes for processing
  */
-module.exports.routes = [];
+module.exports.routes = {};
 module.exports.verbose = false;
 
 /**
@@ -23,12 +23,12 @@ exports.listen = (portNumber) => {
 }
 
 exports.get = async (route, callback) => {
-	module.exports.routes.push({route: route, method: "GET", callback: callback});
+	module.exports.routes[route] = {method: "GET", callback: callback};
 	if (module.exports.verbose) console.log(`RouteMan: Added GET route ${route}`);
 }
 
 exports.post = async (route, callback) => {
-	module.exports.routes.push({route: route, method: "POST", callback: callback});
+	module.exports.routes[route] = {method: "POST", callback: callback};
 	if (module.exports.verbose) console.log(`RouteMan: Added POST route ${route}`);
 }
 
