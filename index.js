@@ -8,8 +8,8 @@ let headers = [];
 /**
  * Register routes for processing
  */
-let routes = exports.routes = [];
-let verbose = exports.verbose = false;
+module.exports.routes = [];
+module.exports.verbose = false;
 
 /**
  * Start server and set port for server to listen on
@@ -17,19 +17,19 @@ let verbose = exports.verbose = false;
  */
 exports.listen = (portNumber) => {
 	server = http.createServer(routeManager);
-	if (verbose) console.log("RouteMan: Server successfully created.");
+	if (module.exports.verbose) console.log("RouteMan: Server successfully created.");
 	server.listen(portNumber ? portNumber : 9000);
-	if (verbose) console.log(`RouteMan: Listening on port ${server.address().port}`);
+	if (module.exports.verbose) console.log(`RouteMan: Listening on port ${server.address().port}`);
 }
 
 exports.get = async (route, callback) => {
-	routes.push({route: route, method: "GET", callback: callback});
-	if (verbose) console.log(`RouteMan: Added GET route ${route}`);
+	module.exports.routes.push({route: route, method: "GET", callback: callback});
+	if (module.exports.verbose) console.log(`RouteMan: Added GET route ${route}`);
 }
 
 exports.post = async (route, callback) => {
-	routes.push({route: route, method: "POST", callback: callback});
-	if (verbose) console.log(`RouteMan: Added POST route ${route}`);
+	module.exports.routes.push({route: route, method: "POST", callback: callback});
+	if (module.exports.verbose) console.log(`RouteMan: Added POST route ${route}`);
 }
 
 /**
@@ -40,7 +40,7 @@ exports.post = async (route, callback) => {
 exports.setHeader = (attribute, value) => {
 	if (attribute && value) {
 		headers.push([attribute, value]);
-		if (verbose) console.log(`RouteMan: Pushed header ${attribute}: ${value}`);
+		if (module.exports.verbose) console.log(`RouteMan: Pushed header ${attribute}: ${value}`);
 	}
 }
 
@@ -50,7 +50,7 @@ let routeManager = async (request, response) => {
 	}
 
 	let path = url.parse(request.url).pathname;
-	let route = routes[path.split("/")[1]];
+	let route = module.exports.routes[path.split("/")[1]];
 
 	//Check if route is available
 	if (!route) {
@@ -65,7 +65,7 @@ let routeManager = async (request, response) => {
 			return response.end();
 		}
 
-		if (verbose) console.log(`RouteMan: \nData: ${data} \nFiles: ${files}`);
+		if (module.exports.verbose) console.log(`RouteMan: \nData: ${data} \nFiles: ${files}`);
 
 		route.callback(data, files, request, response);
 	});
