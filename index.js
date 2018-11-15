@@ -72,6 +72,7 @@ let routeManager = async (request, response) => {
 			console.log("RouteMan: files...", files);
 		}
 
-		route.callback(data, files, request, response);
+		if (route.method === "POST") return route.callback(data, files, request, response);
+		else return route.callback(request, response);
 	});
 };
