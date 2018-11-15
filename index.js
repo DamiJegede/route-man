@@ -12,19 +12,22 @@ let map = exports.routes;
 
 /**
  * Set port for server to listen on
- * @param {Number} portNumber
- * @param {Object} routes
+ * @param {Number} portNumber HTTP port to listen on. Default 9000
+ * @param {Object} routes Object of all mapped routes for route-man to process
+ * @param {Boolean} verbose console.log() all route-man runtime activity. Default false
  */
-exports.listen = (portNumber, routes) => {
+exports.listen = (portNumber, routes, verbose) => {
 	if (!routes) {
 		console.log("No routes declared. Gracefully exiting route-man.");
-		return false;
+		return;
 	}
 	else map = routes;
 
 	(async () => {
 		server = http.createServer(routeManager);
+		if (verbose) console.log("RouteMan server setup complete.");
 		server.listen(portNumber ? portNumber : 9000);
+		if (verbose) console.log(`RouteMan is up and running on port ${server.address}.`);
 	})();
 }
 
