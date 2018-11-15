@@ -22,8 +22,22 @@ exports.listen = (portNumber) => {
 	if (module.exports.verbose) console.log(`RouteMan: Listening on port ${server.address().port}`);
 }
 
+/**
+ * Register a route to routeMan for processing
+ * @param {String} route Route URI to listen to e.g. /account/get/user
+ * @param {Function} callback callback(variables, request, response)
+ */
 exports.get = async (route, callback) => {
-	module.exports.routes[route] = {method: "GET", callback: callback};
+	//Check if route has variables
+	let variables = route.split("/@");
+	let list = [];
+	if (variables.length) {
+		for (let variable of variables) {
+			list.push(variable);
+		}
+	}
+
+	module.exports.routes[route] = {method: "GET", variables: list, key: variables[0], callback: callback};
 	if (module.exports.verbose) console.log(`RouteMan: Added GET route ${route}`);
 }
 
@@ -50,12 +64,31 @@ let routeManager = async (request, response) => {
 	}
 
 	let path = url.parse(request.url).pathname;
-	if (module.exports.verbose) console.log(`RouteMan: Looking for path ${path}`);
+	if (module.exports.verbose) console.log(`RouteMan: Looking for route ${path}`);
 	let route = module.exports.routes[path];
 
 	//Check if route is available
 	if (!route) {
+		if (module.exports.verbose) console.log(`RouteMan: No static route ${path}. Switching to dynamic routes...`);
+
+		//If path not found check dynamic routes
+		let key = path.split("/@");
+		for (let dynamicRoute of module.exports.routes) {
+			if (key[0] === dynamicRoute.key && key.length === dynamicRoute.variables.length) {
+				if (module.exports.verbose) console.log(`RouteMan: Found ${path} in dynamic routes...`);
+
+				//Map variables to correct indexes
+				let variables = {};
+				for (let i=0; i<key.length; i++) {
+					variables[dynamicRoute.variables[i]] = key[i];
+				}
+
+				return route.callback(request, response, variables);
+			}
+		}
+	
 		if (module.exports.verbose) console.log(`RouteMan: Couldn't find route ${path}. Available routes...`, module.exports.routes);
+
 		response.write(JSON.stringify({status: 402, message: `Unknown route to ${path}.`}));
 		return response.end();
 	}
