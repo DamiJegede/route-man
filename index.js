@@ -8,27 +8,28 @@ let headers = [];
 /**
  * Register routes for processing
  */
-let map = exports.routes;
+let routes = exports.routes = [];
+let verbose = exports.verbose = false;
 
 /**
- * Set port for server to listen on
+ * Start server and set port for server to listen on
  * @param {Number} portNumber HTTP port to listen on. Default 9000
- * @param {Object} routes Object of all mapped routes for route-man to process
- * @param {Boolean} verbose console.log() all route-man runtime activity. Default false
  */
-exports.listen = (portNumber, routes, verbose) => {
-	if (!routes) {
-		console.log("No routes declared. Gracefully exiting route-man.");
-		return;
-	}
-	else map = routes;
+exports.listen = (portNumber) => {
+	server = http.createServer(routeManager);
+	if (verbose) console.log("RouteMan: Server successfully created.");
+	server.listen(portNumber ? portNumber : 9000);
+	if (verbose) console.log(`RouteMan: Listening on port ${server.address().port}`);
+}
 
-	(async () => {
-		server = http.createServer(routeManager);
-		if (verbose) console.log("RouteMan server setup complete.");
-		server.listen(portNumber ? portNumber : 9000);
-		if (verbose) console.log(`RouteMan is up and running on port ${server.address().port}.`);
-	})();
+exports.get = async (route, callback) => {
+	routes.push({route: route, method: "GET", callback: callback});
+	if (verbose) console.log(`RouteMan: Added GET route ${route}`);
+}
+
+exports.post = async (route, callback) => {
+	routes.push({route: route, method: "POST", callback: callback});
+	if (verbose) console.log(`RouteMan: Added POST route ${route}`);
 }
 
 /**
@@ -37,7 +38,10 @@ exports.listen = (portNumber, routes, verbose) => {
  * @param {String} value
  */
 exports.setHeader = (attribute, value) => {
-	if (attribute && value) headers.push([attribute, value]);
+	if (attribute && value) {
+		headers.push([attribute, value]);
+		if (verbose) console.log(`RouteMan: Pushed header ${attribute}: ${value}`);
+	}
 }
 
 let routeManager = async (request, response) => {
@@ -45,10 +49,8 @@ let routeManager = async (request, response) => {
 		response.setHeader(header[0], header[1]);
 	}
 
-	response.writeHead(200, {"Content-Type": "text/json"});
-
 	let path = url.parse(request.url).pathname;
-	let route = map[path.split("/")[1]];
+	let route = routes[path.split("/")[1]];
 
 	//Check if route is available
 	if (!route) {
@@ -57,14 +59,14 @@ let routeManager = async (request, response) => {
 	}
 
 	let form = new formidable.IncomingForm();
-	form.parse(request, async (error, fields, files) => {
+	form.parse(request, async (error, data, files) => {
 		if (error) {
 			response.write(JSON.stringify({status: 500, message: "Oops! That's an error. Please try again."}));
 			return response.end();
 		}
 
-		console.log(fields, files);
+		if (verbose) console.log(`RouteMan: \nData: ${data} \nFiles: ${files}`);
 
-		return route.route(path, fields, files, response);
+		route.callback(data, files, request, response);
 	});
 };
