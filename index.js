@@ -27,7 +27,7 @@ exports.listen = (portNumber, routes, verbose) => {
 		server = http.createServer(routeManager);
 		if (verbose) console.log("RouteMan server setup complete.");
 		server.listen(portNumber ? portNumber : 9000);
-		if (verbose) console.log(`RouteMan is up and running on port ${server.address}.`);
+		if (verbose) console.log(`RouteMan is up and running on port ${server.address().port}.`);
 	})();
 }
 
