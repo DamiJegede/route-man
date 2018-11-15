@@ -68,10 +68,8 @@ let routeManager = async (request, response) => {
 		}
 
 		if (module.exports.verbose) {
-			console.log("RouteMan: data...");
-			console.log(data);
-			console.log("RouteMan: files...");
-			console.log(files);
+			console.log("RouteMan: data...", data);
+			console.log("RouteMan: files...", files);
 		}
 
 		route.callback(data, files, request, response);
