@@ -30,7 +30,7 @@ exports.listen = (portNumber) => {
 exports.get = async (route, callback) => {
 	//Check if route has variables
 	let variables = route.split("/@");
-	if (variables.length) {
+	if (variables.length > 1) {
 		let key = variables[0];
 		variables.shift();
 
