@@ -30,15 +30,17 @@ exports.listen = (portNumber) => {
 exports.get = async (route, callback) => {
 	//Check if route has variables
 	let variables = route.split("/@");
-	let list = [];
 	if (variables.length) {
-		for (let variable of variables) {
-			list.push(variable);
-		}
-	}
+		let key = variables[0];
+		variables.shift();
 
-	module.exports.routes[route] = {method: "GET", variables: list, key: variables[0], callback: callback};
-	if (module.exports.verbose) console.log(`RouteMan: Added GET route ${route}`);
+		module.exports.routes[key] = {method: "GET", variables: variables, callback: callback};
+		if (module.exports.verbose) console.log(`RouteMan: Added dynamic GET route ${route}`);
+	}
+	else {
+		module.exports.routes[route] = {method: "GET", callback: callback};
+		if (module.exports.verbose) console.log(`RouteMan: Added static GET route ${route}`);
+	}
 }
 
 exports.post = async (route, callback) => {
@@ -67,29 +69,30 @@ let routeManager = async (request, response) => {
 	if (module.exports.verbose) console.log(`RouteMan: Looking for route ${path}`);
 	let route = module.exports.routes[path];
 
-	//Check if route is available
+	//Check if route is not a static route
 	if (!route) {
 		if (module.exports.verbose) console.log(`RouteMan: No static route ${path}. Switching to dynamic routes...`);
 
 		//If path not found check dynamic routes
-		let key = path.split("/@");
-		for (let dynamicRoute of module.exports.routes) {
-			if (key[0] === dynamicRoute.key && key.length === dynamicRoute.variables.length) {
-				if (module.exports.verbose) console.log(`RouteMan: Found ${path} in dynamic routes...`);
+		let dynamicRoute = path.split("/@");
+		route = module.exports.routes[dynamicRoute[0]];
+		dynamicRoute.shift();
 
-				//Map variables to correct indexes
-				let variables = {};
-				for (let i=0; i<key.length; i++) {
-					variables[dynamicRoute.variables[i]] = key[i];
-				}
+		if (route && dynamicRoute.length === route.variables.length) {
+			if (module.exports.verbose) console.log(`RouteMan: Found ${path} in dynamic routes...`);
 
-				return route.callback(request, response, variables);
+			//Map variables to correct indexes
+			let variables = {};
+			for (let i=0; i<route.variables.length; i++) {
+				variables[route.variables[i]] = dynamicRoute[i];
 			}
+
+			return route.callback(request, response, variables);
 		}
 	
 		if (module.exports.verbose) console.log(`RouteMan: Couldn't find route ${path}. Available routes...`, module.exports.routes);
 
-		response.write(JSON.stringify({status: 402, message: `Unknown route to ${path}.`}));
+		response.write(JSON.stringify({status: 404, message: `Unknown route to ${path}.`}));
 		return response.end();
 	}
 
