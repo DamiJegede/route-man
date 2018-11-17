@@ -23,8 +23,8 @@ exports.listen = (portNumber) => {
 }
 
 /**
- * Register a route to routeMan for processing
- * @param {String} route Route URI to listen to e.g. /account/get/user
+ * Register a GET route to routeMan for processing. Uses static dynamic URIs.
+ * @param {String} route Route URI to listen to e.g. /account/users/list (static) or /accounts/@userid/@messages (dynamic)
  * @param {Function} callback callback(variables, request, response)
  */
 exports.get = async (route, callback) => {
@@ -43,6 +43,11 @@ exports.get = async (route, callback) => {
 	}
 }
 
+/**
+ * Register a POST route to routeMan for processing. Uses only static URIs.
+ * @param {String} route Route URI to listen to e.g. /account/users/update
+ * @param {Function} callback callback(variables, request, response)
+ */
 exports.post = async (route, callback) => {
 	module.exports.routes[route] = {method: "POST", callback: callback};
 	if (module.exports.verbose) console.log(`RouteMan: Added POST route ${route}`);
