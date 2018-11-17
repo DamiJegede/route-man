@@ -23,7 +23,7 @@ exports.listen = (portNumber) => {
 }
 
 /**
- * Register a GET route to routeMan for processing. Uses static dynamic URIs.
+ * Register a GET route to routeMan for processing. Uses static or dynamic URIs.
  * @param {String} route Route URI to listen to e.g. /account/users/list (static) or /accounts/@userid/@messages (dynamic)
  * @param {Function} callback callback(variables, request, response)
  */
