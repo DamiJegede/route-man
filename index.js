@@ -87,12 +87,12 @@ let routeManager = async (request, response) => {
 			if (module.exports.verbose) console.log(`RouteMan: Found ${path} in dynamic routes...`);
 
 			//Map variables to correct indexes
-			let variables = {};
+			let data = {};
 			for (let i=0; i<route.variables.length; i++) {
-				variables[route.variables[i]] = dynamicRoute[i];
+				data[route.variables[i]] = dynamicRoute[i];
 			}
 
-			return route.callback(request, response, variables);
+			return route.callback(request, response, data);
 		}
 	
 		if (module.exports.verbose) console.log(`RouteMan: Couldn't find route ${path}. Available routes...`, module.exports.routes);
