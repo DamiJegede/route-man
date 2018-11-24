@@ -70,6 +70,15 @@ let routeManager = async (request, response) => {
 		response.setHeader(header[0], header[1]);
 	}
 
+	/**
+	 * Alias to process return message and close server connection
+	 * @param {String} message
+	 */
+	response.send = (message) => {
+		response.write(message);
+		return response.end();
+	};
+
 	let path = url.parse(request.url).pathname;
 	if (module.exports.verbose) console.log(`RouteMan: Looking for route ${path}`);
 	let route = module.exports.routes[path];
