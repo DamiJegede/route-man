@@ -72,10 +72,11 @@ let routeManager = async (request, response) => {
 
 	/**
 	 * Alias to process return message and close server connection
-	 * @param {String} message
+	 * @param {Object} message
 	 */
 	response.send = (message) => {
-		response.write(message);
+		if (typeof message === "string") response.write(message);
+		else response.write(JSON.stringify(message));
 		return response.end();
 	};
 
