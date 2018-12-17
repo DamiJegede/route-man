@@ -1,6 +1,6 @@
 {
   "name": "route-man",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Route Manager is a superfast and lightweight routing processor for backend Node applications. It's a bit like express, only just about 5x faster and without the overhead of express dependencies.",
   "main": "index.js",
   "scripts": {

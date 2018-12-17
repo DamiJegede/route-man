@@ -102,7 +102,7 @@ let routeManager = async (request, response) => {
 				data[route.variables[i]] = dynamicRoute[i];
 			}
 
-			return route.callback(request, response, data);
+			return route.callback({request: request, response: response, data: data});
 		}
 	
 		if (module.exports.verbose) console.log(`RouteMan: Couldn't find route ${path}. Available routes...`, module.exports.routes);
@@ -123,7 +123,7 @@ let routeManager = async (request, response) => {
 			console.log("RouteMan: files...", files);
 		}
 
-		if (route.method === "POST") return route.callback(data, files, request, response);
-		else return route.callback(request, response);
+		if (route.method === "POST") return route.callback({data: data, files: files, request: request, response: response});
+		else return route.callback({request: request, response: response});
 	});
 };
