@@ -1,6 +1,6 @@
 {
   "name": "route-man",
-  "version": "1.4.1",
+  "version": "2.4.1",
   "description": "Route Manager is a superfast and lightweight routing processor for backend Node applications. It's a bit like express, only just about 5x faster and without the overhead of express dependencies.",
   "main": "build/index.js",
   "scripts": {
@@ -19,7 +19,7 @@
     "fast"
   ],
   "author": "Dami Rafael Jegede",
-  "publishConfig": { "registry": "https://npm.pkg.github.com/" },
+  "publishConfig": { "registry": "https://npm.pkg.github.com/DamiJegede" },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/DamiJegede/route-man/issues"
