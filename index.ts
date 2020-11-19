@@ -4,7 +4,6 @@ import * as formidable from "formidable";
 
 /**
  * Alias to process return message and close server connection
- * @param {Object} message
  */
 export class RouteResponse extends OutgoingMessage {
 	private response: OutgoingMessage;
@@ -24,6 +23,11 @@ export class RouteResponse extends OutgoingMessage {
 		return this.response.end();
 	};
 }
+
+/**
+ * Alias to process incoming request data
+ */
+export class RouteRequest extends IncomingMessage {}
 
 /**
  * Incoming parsed RouteManager request
@@ -61,24 +65,25 @@ export class RouteManager {
 	}
 
 	/**
-	 * Start server and set port for server to listen on
-	 * @param {Number} portNumber HTTP port to listen on. Default 9000
+	 * Start server and set port for server to listen on. Default port is 9000
 	 */
-	public listen: Function = (portNumber: number): void => {
+	public listen: Function = function (portNumber?: number): void {
 		this.server = createServer(this.routeRequest);
 		if (this.verbose) console.log("RouteMan: Server successfully created.");
-		this.server.listen(portNumber ? portNumber : 9000);
+
+		//Set default port if not provided
+		portNumber = portNumber ? portNumber : 9000;
+
+		this.server.listen(portNumber);
 		if (this.verbose) console.log(`RouteMan: Listening on port ${portNumber}`);
 	}
 
 	/**
 	 * Register a GET route to routeMan for processing. Uses static or dynamic URIs.
-	 * @param {String} route Route URI to listen to e.g. /account/users/list (static) or /accounts/@userid/@messages (dynamic)
-	 * @param {Function} callback callback(variables, request, response)
 	 */
-	public get: Function = (route: string, callback: any): void => {
+	public get: Function = function (route: string, callback: any): void {
 		//Check if route has variables
-		let variables = route.split("/@");
+		let variables: Array<string> = route.split("/@");
 		if (variables.length > 1) {
 			let key = variables[0];
 			variables.shift();
@@ -94,20 +99,16 @@ export class RouteManager {
 
 	/**
 	 * Register a POST route to routeMan for processing. Uses only static URIs.
-	 * @param {String} route Route URI to listen to e.g. /account/users/update
-	 * @param {Function} callback callback(variables, request, response)
 	 */
-	public post: Function = (route: string, callback: any): void => {
+	public post: Function = function (route: string, callback: any): void {
 		this.routes[route] = {method: "POST", callback: callback};
 		if (this.verbose) console.log(`RouteMan: Added POST route ${route}`);
 	}
 
 	/**
 	 * Set header attributes and values
-	 * @param {String} attribute
-	 * @param {String} value
 	 */
-	public setHeader: Function = (attribute: string, value: string): void => {
+	public setHeader: Function = function (attribute: string, value: string): void {
 		if (attribute && value) {
 			this.headers.push([attribute, value]);
 			if (this.verbose) console.log(`RouteMan: Pushed header ${attribute}: ${value}`);

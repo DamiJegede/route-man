@@ -2,7 +2,6 @@
 import { IncomingMessage, OutgoingMessage } from "http";
 /**
  * Alias to process return message and close server connection
- * @param {Object} message
  */
 export declare class RouteResponse extends OutgoingMessage {
     private response;
@@ -11,7 +10,12 @@ export declare class RouteResponse extends OutgoingMessage {
      * Write response and end server request.
      * Automatically converts message: object to string
      */
-    send: Function;
+    send (message: any): Function;
+}
+/**
+ * Alias to process incoming request data
+ */
+export declare class RouteRequest extends IncomingMessage {
 }
 /**
  * Incoming parsed RouteManager request
@@ -40,27 +44,20 @@ export declare class RouteManager {
      */
     constructor(verbose?: boolean | undefined);
     /**
-     * Start server and set port for server to listen on
-     * @param {Number} portNumber HTTP port to listen on. Default 9000
+     * Start server and set port for server to listen on. Default port is 9000
      */
-    listen: Function;
+    listen (portNumber?: number): Function;
     /**
      * Register a GET route to routeMan for processing. Uses static or dynamic URIs.
-     * @param {String} route Route URI to listen to e.g. /account/users/list (static) or /accounts/@userid/@messages (dynamic)
-     * @param {Function} callback callback(variables, request, response)
      */
-    get: Function;
+    get (route: string, callback: any): Function;
     /**
      * Register a POST route to routeMan for processing. Uses only static URIs.
-     * @param {String} route Route URI to listen to e.g. /account/users/update
-     * @param {Function} callback callback(variables, request, response)
      */
-    post: Function;
+    post (route: string, callback: any): Function;
     /**
      * Set header attributes and values
-     * @param {String} attribute
-     * @param {String} value
      */
-    setHeader: Function;
+    setHeader (attribute: string, value: string): Function;
     private routeRequest;
 }

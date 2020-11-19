@@ -14,7 +14,6 @@ const url = require("url");
 const formidable = require("formidable");
 /**
  * Alias to process return message and close server connection
- * @param {Object} message
  */
 class RouteResponse extends http_1.OutgoingMessage {
     constructor(response) {
@@ -35,6 +34,12 @@ class RouteResponse extends http_1.OutgoingMessage {
 }
 exports.RouteResponse = RouteResponse;
 /**
+ * Alias to process incoming request data
+ */
+class RouteRequest extends http_1.IncomingMessage {
+}
+exports.RouteRequest = RouteRequest;
+/**
  * Superclass for all RouteManager routes
  */
 class Route {
@@ -53,23 +58,22 @@ class RouteManager {
         this.routes = {};
         this.verbose = false;
         /**
-         * Start server and set port for server to listen on
-         * @param {Number} portNumber HTTP port to listen on. Default 9000
+         * Start server and set port for server to listen on. Default port is 9000
          */
-        this.listen = (portNumber) => {
+        this.listen = function (portNumber) {
             this.server = http_1.createServer(this.routeRequest);
             if (this.verbose)
                 console.log("RouteMan: Server successfully created.");
-            this.server.listen(portNumber ? portNumber : 9000);
+            //Set default port if not provided
+            portNumber = portNumber ? portNumber : 9000;
+            this.server.listen(portNumber);
             if (this.verbose)
                 console.log(`RouteMan: Listening on port ${portNumber}`);
         };
         /**
          * Register a GET route to routeMan for processing. Uses static or dynamic URIs.
-         * @param {String} route Route URI to listen to e.g. /account/users/list (static) or /accounts/@userid/@messages (dynamic)
-         * @param {Function} callback callback(variables, request, response)
          */
-        this.get = (route, callback) => {
+        this.get = function (route, callback) {
             //Check if route has variables
             let variables = route.split("/@");
             if (variables.length > 1) {
@@ -87,20 +91,16 @@ class RouteManager {
         };
         /**
          * Register a POST route to routeMan for processing. Uses only static URIs.
-         * @param {String} route Route URI to listen to e.g. /account/users/update
-         * @param {Function} callback callback(variables, request, response)
          */
-        this.post = (route, callback) => {
+        this.post = function (route, callback) {
             this.routes[route] = { method: "POST", callback: callback };
             if (this.verbose)
                 console.log(`RouteMan: Added POST route ${route}`);
         };
         /**
          * Set header attributes and values
-         * @param {String} attribute
-         * @param {String} value
          */
-        this.setHeader = (attribute, value) => {
+        this.setHeader = function (attribute, value) {
             if (attribute && value) {
                 this.headers.push([attribute, value]);
                 if (this.verbose)
