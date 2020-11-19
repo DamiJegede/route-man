@@ -4,7 +4,8 @@
   "description": "Route Manager is a superfast and lightweight routing processor for backend Node applications. It's a bit like express, only just about 5x faster and without the overhead of express dependencies.",
   "main": "build/index.js",
   "scripts": {
-    "compile": "tsc --declaration"
+    "compile": "tsc --declaration",
+    "build": "npm install && tsc"
   },
   "repository": { "url": "git@github.com:DamiJegede/route-man.git" },
   "keywords": [
