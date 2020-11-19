@@ -7,7 +7,9 @@
     "compile": "tsc --declaration",
     "build": "npm install && tsc"
   },
-  "repository": { "url": "git@github.com:DamiJegede/route-man.git" },
+  "repository": {
+    "url": "git@github.com:DamiJegede/route-man.git"
+  },
   "keywords": [
     "routing",
     "express",
@@ -18,7 +20,9 @@
   ],
   "author": "Dami Rafael Jegede",
   "license": "MIT",
-  "bugs": { "url": "https://github.com/DamiJegede/route-man/issues" },
+  "bugs": {
+    "url": "https://github.com/DamiJegede/route-man/issues"
+  },
   "homepage": "https://github.com/DamiJegede/route-man#readme",
   "dependencies": {
     "formidable": "^1.2.1"
