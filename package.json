@@ -19,6 +19,7 @@
     "fast"
   ],
   "author": "Dami Rafael Jegede",
+  "publishConfig": { "registry": "https://npm.pkg.github.com/" },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/DamiJegede/route-man/issues"
